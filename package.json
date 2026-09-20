@@ -1,8 +1,8 @@
 {
-  "name": "chainbrief-ai",
-  "version": "0.1.0",
+  "name": "dayflow-agent",
+  "version": "1.0.0",
   "private": true,
-  "description": "A bilingual crypto research agent built with OpenRouter web search.",
+  "description": "A multimodal personal operations agent powered by an Orbio-issued OpenRouter key.",
   "type": "module",
   "packageManager": "pnpm@10.4.1",
   "engines": { "node": ">=22" },

@@ -13,8 +13,18 @@ export default tseslint.config(js.configs.recommended, ...tseslint.configs.recom
       navigator: 'readonly',
       window: 'readonly',
       localStorage: 'readonly',
+      sessionStorage: 'readonly',
+      FileReader: 'readonly',
+      Blob: 'readonly',
       URL: 'readonly',
       URLSearchParams: 'readonly',
+    },
+  },
+}, {
+  files: ['tests/**/*.mjs'],
+  languageOptions: {
+    globals: {
+      URL: 'readonly',
     },
   },
 })

@@ -1,180 +1,153 @@
-# ChainBrief AI
+# DayFlow Agent
 
-ChainBrief AI is a bilingual crypto research agent built from the Orbio starter repository. It helps users research tokens, projects, contract addresses, and crypto questions, then turns a completed report into an editable X, Threads, or Binance Square draft.
+**Drop the chaos. Get your day back.**
 
-This project is research-only. It never publishes social posts, never connects to X or Binance accounts, never signs transactions, and never performs trades.
+DayFlow is a multimodal personal operations agent built for Orbio Build Week. It turns unstructured notes, screenshots, and PDFs into a predictable daily plan containing tasks, events, reminders, shopping items, clarifying questions, and replies ready for human review.
+
+## Why it exists
+
+Useful commitments are often trapped in chat messages, screenshots, booking PDFs, and hurried voice notes. Moving those details into a calendar or task app is repetitive work, so people postpone it and forget things.
+
+DayFlow performs that translation in one step:
+
+```text
+messy input → multimodal understanding → typed plan → human review → action
+```
+
+It is deliberately not a general chatbot. The output follows a strict schema so the interface can turn it into checkable tasks, calendar events, reminders, lists, and draft replies.
 
 ## Features
 
-- English and Vietnamese research reports.
-- Required Supabase authentication with email/password or Google before paid research endpoints can be used.
-- Optional identity constraint field for official URL, contract address, or blockchain.
-- Web-grounded research through OpenRouter server-side web search.
-- Entity-resolution guardrails for same-name crypto projects.
-- Verified identity panel with project name, symbol, official domain, blockchain, chain ID, and contract when verified.
-- Report sections for executive summary, key facts, technology/use case, token information, positive signals, risks, sources, and not-financial-advice notice.
-- Safe Markdown rendering without unsafe HTML injection.
-- Optional X and Binance Square draft generation.
-- Human approval workflow before copying a generated social draft.
-- Per-account research history with search, rename, delete, and reopen actions.
-- Markdown download, print-to-PDF, and private-by-default public share links.
-- Per-account watchlist with one-click fresh research.
-- Source-type badges for official domains, documentation, repositories, explorers, and external sources.
-- Admin-only runtime and OpenRouter API-key usage dashboard.
-- Draft factual sanitizer that removes unsupported hard facts and keeps the research report visible.
-- `/api/health` endpoint for non-paid server/config/OpenRouter connectivity checks.
-- Server-side validation of every Supabase access token before `/api/research` or `/api/social` runs.
-- Optional `DEMO_ACCESS_CODE` protection as an additional private-demo gate.
+- Text capture for messages, notes, and brain dumps.
+- Browser voice dictation when supported.
+- Drag-and-drop JPEG, PNG, WebP, and PDF input.
+- Orbio-powered multimodal understanding.
+- Optional live web grounding when current context is genuinely useful.
+- Strict structured output validated with Zod.
+- Tasks with priority, due time, duration, and completion state.
+- Events with location and preparation lists.
+- Reminders, shopping lists, and replies ready for review.
+- Explicit clarification questions instead of invented details.
+- Copyable plain-text plan, JSON export, and `.ics` calendar export.
+- Privacy-first local persistence for the latest plan.
+- Responsive UI with no account required for the public demo.
+
+## How Orbio is used
+
+The project uses the Orbio-issued OpenRouter key entirely on the server. A single request can combine:
+
+- model inference;
+- image understanding;
+- PDF parsing through the file-parser plugin;
+- optional `openrouter:web_search` grounding;
+- strict JSON-schema output.
+
+This gives Orbio an everyday consumer use case rather than another chat surface. DayFlow demonstrates how one Orbio key can power a complete capture-to-action workflow and produce output that downstream software can reliably consume.
 
 ## Architecture
 
-- `src/server.ts` runs a small TypeScript HTTP server.
-- `src/lib/openrouter.ts` loads `.env.local` server-side and creates the OpenRouter client.
-- `src/lib/auth.ts` validates Supabase bearer tokens server-side before paid work begins.
-- `src/lib/storage.ts` accesses Supabase PostgREST using the signed-in user's bearer token and RLS policies.
-- `src/lib/identity.ts` handles identity hints, URL canonicalization, verified identity extraction, and conflict detection.
-- `src/lib/social.ts` normalizes social model output, validates hard facts, shortens X drafts, and creates deterministic fallbacks.
-- `src/public/` contains the browser UI and Supabase session client. It never reads `OPENROUTER_API_KEY`.
-- `tests/` contains mocked regression tests for identity resolution, report normalization, social draft safety, and UI behavior checks.
+```text
+Browser
+  ├─ text / voice / image / PDF capture
+  ├─ local latest-plan persistence
+  └─ task, calendar and export UI
+          │
+          ▼
+Node.js HTTP server
+  ├─ input and MIME validation
+  ├─ per-client rate limiting
+  ├─ paid-request concurrency cap
+  ├─ optional demo access code
+  └─ secret-key redaction
+          │
+          ▼
+Orbio-issued key → OpenRouter models and tools
+```
 
-The browser sends requests only to the local server. The server is the only place that can access OpenRouter credentials.
+The browser never receives `OPENROUTER_API_KEY`. Uploaded content is passed to the inference request and is not written to disk or a database by this application.
 
-## Local Installation
+## Local setup
 
 Requirements:
 
-- Windows PowerShell
-- Node.js 22 or newer
+- Node.js 22+
 - pnpm
-- An OpenRouter API key stored in `.env.local`
-- A Supabase project with email and/or Google authentication enabled
+- An Orbio-issued OpenRouter key
 
-Install dependencies:
+Install and configure:
 
-```powershell
-pnpm.cmd install
+```bash
+pnpm install
+cp .env.example .env.local
 ```
 
-Create local environment config:
+Set at least:
 
-```powershell
-Copy-Item .env.example .env.local
+```env
+OPENROUTER_API_KEY=your_orbio_issued_key
+APP_NAME=DayFlow Agent
+APP_URL=http://localhost:5173
 ```
 
-Edit `.env.local` locally. Do not commit it.
+Run locally:
 
-## Environment Variables
+```bash
+pnpm dev
+```
+
+Open `http://localhost:5173`.
+
+## Commands
+
+```bash
+pnpm typecheck
+pnpm lint
+pnpm test
+pnpm build
+pnpm start
+```
+
+## Production environment
 
 Required:
 
 ```env
 OPENROUTER_API_KEY=
-SUPABASE_URL=https://your-project-ref.supabase.co
-SUPABASE_PUBLISHABLE_KEY=sb_publishable_your_public_key
 ```
 
 Optional:
 
 ```env
 OPENROUTER_MODEL=anthropic/claude-sonnet-4.5
-OPENROUTER_IMAGE_MODEL=openai/gpt-image-1
-APP_NAME=ChainBrief AI
-APP_URL=http://localhost:5173
-ADMIN_EMAILS=owner@example.com
-DEMO_ACCESS_CODE=
+APP_NAME=DayFlow Agent
+APP_URL=https://your-app.example
 PAID_CONCURRENCY_MAX=2
+RATE_LIMIT_MAX=6
+DEMO_ACCESS_CODE=
 PORT=5173
 ```
 
-`SUPABASE_PUBLISHABLE_KEY` is designed to be public. Never place a Supabase `service_role` or secret key in this application. `DEMO_ACCESS_CODE` is optional; when set, it acts as an additional gate after Supabase authentication.
+The health check is available at `GET /api/health` and never exposes the key.
 
-## Supabase Workspace Setup
+## Safety and privacy
 
-Before deploying the saved history and watchlist UI, run this migration once in the Supabase SQL editor:
+- The Orbio key is server-only.
+- Input size and attachment count are capped.
+- Attachment MIME type must match its data URL.
+- Only supported image formats and PDFs are accepted.
+- Generated output is schema-validated before it reaches the browser.
+- User content is rendered with DOM `textContent`, not injected HTML.
+- External sources are opened only for validated HTTP(S) URLs.
+- The agent is instructed not to invent missing commitments or dates.
+- Human review is required before using replies or acting on a plan.
+- Rate limiting and concurrency controls protect promotional inference credits.
 
-```text
-supabase/migrations/20260908090000_chainbrief_workspace.sql
-```
+## Build Week
 
-The migration creates `briefs` and `watchlist`, enables row-level security, and adds a narrowly scoped function for unguessable read-only share links. Users can access only their own records. No service-role key is required or accepted by the app.
+The original ChainBrief project is preserved at tag `chainbrief-v1-final` and branch `archive/chainbrief-v1`. DayFlow is the new public Build Week entry.
 
-To enable the admin tab, set `ADMIN_EMAILS` on Render to one or more comma-separated account emails. Runtime request counters reset whenever Render restarts. OpenRouter usage is read from the configured API key without exposing the key.
+See [`SUBMISSION.md`](./SUBMISSION.md) for the concise project write-up.
 
-## Development
+## License
 
-Run the development server:
-
-```powershell
-pnpm.cmd dev
-```
-
-Open:
-
-```text
-http://localhost:5173
-```
-
-Run checks:
-
-```powershell
-pnpm.cmd typecheck
-pnpm.cmd lint
-pnpm.cmd test
-pnpm.cmd audit
-```
-
-## Production
-
-Build:
-
-```powershell
-pnpm.cmd build
-```
-
-Start:
-
-```powershell
-pnpm.cmd start
-```
-
-Use a process manager or platform runtime to keep the process alive. Configure the production Site URL and redirect URL in Supabase Auth, then set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` on the hosting platform.
-
-## Health Check
-
-`GET /api/health` returns:
-
-- server status and port
-- whether OpenRouter configuration is present
-- whether Supabase authentication is configured
-- whether demo access-code protection is enabled
-- non-generation OpenRouter connectivity via `GET /api/v1/models`
-
-The health endpoint does not expose secrets and does not make a paid model request.
-
-## Safety Design
-
-- `OPENROUTER_API_KEY` is loaded only on the server.
-- `/api/research` and `/api/social` fail closed unless a valid Supabase session is verified server-side.
-- Only the public Supabase URL and publishable key are exposed to the browser; service-role keys are never used.
-- `.env.local` is ignored by Git.
-- API responses and logs redact OpenRouter key patterns and bearer tokens.
-- Paid endpoints have request-size limits, per-client rate limiting, safe concurrency limits, and request timeouts.
-- Public deployments can set `DEMO_ACCESS_CODE` to protect paid endpoints.
-- The app does not enable unrestricted CORS.
-- User-supplied URLs are validated before paid research requests. Unsupported protocols, localhost, loopback, and private-network IP URLs are rejected.
-- Social drafts are generated as editable drafts only. Copy stays disabled until explicit human approval.
-- Editing an approved draft resets approval.
-- Unsupported hard facts in social drafts are removed or replaced with a deterministic fallback based on the displayed report.
-
-## Known Limitations
-
-- Research quality depends on OpenRouter model/provider availability and web-search results.
-- The app can verify only information present in model output, source URLs, annotations, official domains, or authoritative explorer references.
-- The social validator checks hard facts such as numbers, dates, addresses, domains, chains, token symbols, and audit/security-score claims. It is not a full truth engine.
-- URL safety checks block direct private IP and localhost URLs, but they do not resolve every public hostname to detect private DNS targets because the server does not fetch user-supplied URLs directly.
-- Watchlist updates are user-triggered; automatic email alerts require a scheduler and transactional email provider that are not part of this release.
-- Runtime admin counters reset when the Render process restarts.
-
-## Build Week Attribution
-
-Built for Orbio Build Week as a public v0.1.0 MVP using the Orbio starter and OpenRouter.
+MIT
