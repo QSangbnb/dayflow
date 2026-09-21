@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="DayFlow turns notes, screenshots, and PDFs into a clear daily action plan with Orbio-powered AI."
+    />
+    <meta name="theme-color" content="#0b1020" />
+    <title>DayFlow — Turn life into a clear plan</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="DayFlow home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32"><path d="M8 9h16M8 16h10M8 23h16"/><circle cx="23" cy="16" r="3"/></svg>
+        </span>
+        <span>DayFlow</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#workspace">Workspace</a>
+        <a href="#how-it-works">How it works</a>
+      </nav>
+      <div class="orbio-pill"><span></span>Powered by Orbio</div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow"><span></span>YOUR PERSONAL OPERATIONS AGENT</p>
+          <h1>Drop the chaos.<br /><em>Get your day back.</em></h1>
+          <p class="hero-lede">
+            Paste a messy message, upload a screenshot or add a PDF. DayFlow turns it into tasks,
+            events, reminders and ready-to-send replies in seconds.
+          </p>
+          <div class="hero-points" aria-label="Product highlights">
+            <span><b>01</b> Understand</span>
+            <span><b>02</b> Organize</span>
+            <span><b>03</b> Act</span>
+          </div>
+        </div>
+
+        <div class="hero-preview" aria-hidden="true">
+          <div class="preview-topline">
+            <span>DAYFLOW / LIVE</span>
+            <i></i>
+          </div>
+          <div class="preview-input">
+            <span class="preview-avatar">S</span>
+            <p>“Friday 8am doctor. Bring test results. Reply to Lan before lunch...”</p>
+          </div>
+          <div class="preview-arrow">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="preview-grid">
+            <div><small>EVENT</small><strong>Doctor · Fri 08:00</strong></div>
+            <div><small>REMINDER</small><strong>Bring test results</strong></div>
+            <div class="preview-wide"><small>DRAFT REPLY</small><strong>Ready for review</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="workspace" class="workspace-shell">
+        <div class="workspace-heading">
+          <div>
+            <p class="section-kicker">YOUR ACTION INBOX</p>
+            <h2>What is taking up space in your head?</h2>
+          </div>
+          <div class="privacy-note">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.8 2.8 8.2 7 10 4.2-1.8 7-5.2 7-10V6z"/><path d="m9.5 12 1.7 1.7 3.6-4"/></svg>
+            <span><b>Private by design</b>Your plans stay in this browser.</span>
+          </div>
+        </div>
+
+        <div class="workspace-grid">
+          <form id="dayflow-form" class="composer-panel">
+            <div class="panel-label"><span>01</span> CAPTURE</div>
+            <label class="sr-only" for="capture-input">Notes to organize</label>
+            <textarea
+              id="capture-input"
+              maxlength="8000"
+              rows="9"
+              placeholder="Paste a message, brain dump, appointment details, shopping notes, or anything you need to handle..."
+            ></textarea>
+
+            <div class="input-toolbar">
+              <span id="character-count">0 / 8,000</span>
+              <div>
+                <button id="voice-button" class="icon-button" type="button" title="Dictate a note" aria-label="Dictate a note">
+                  <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"/></svg>
+                </button>
+                <button id="attach-button" class="icon-button" type="button" title="Add an attachment" aria-label="Add an attachment">
+                  <svg viewBox="0 0 24 24"><path d="m9 12 5-5a3 3 0 0 1 4 4l-7 7a5 5 0 0 1-7-7l7-7"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <input id="file-input" type="file" accept="image/jpeg,image/png,image/webp,application/pdf" multiple hidden />
+            <button id="drop-zone" class="drop-zone" type="button">
+              <span class="drop-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 15v4h16v-4"/></svg>
+              </span>
+              <span><b>Drop screenshots or PDFs here</b><small>JPEG, PNG, WebP or PDF · up to 3 files</small></span>
+            </button>
+            <div id="attachment-list" class="attachment-list" aria-live="polite"></div>
+
+            <div class="sample-block">
+              <span>TRY AN EXAMPLE</span>
+              <div class="sample-list">
+                <button type="button" data-sample="appointment">Appointment message</button>
+                <button type="button" data-sample="busy-day">Messy day</button>
+                <button type="button" data-sample="trip">Travel checklist</button>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <label>
+                <span>Output language</span>
+                <select id="language-input">
+                  <option value="en">English</option>
+                  <option value="vi">Tiếng Việt</option>
+                </select>
+              </label>
+              <label class="toggle-setting">
+                <span><b>Live context</b><small>Search only when useful</small></span>
+                <input id="live-context" type="checkbox" />
+                <i aria-hidden="true"></i>
+              </label>
+            </div>
+
+            <details class="demo-access">
+              <summary>Demo access code <span>Only if the host requires one</span></summary>
+              <input id="access-code" type="password" maxlength="120" autocomplete="off" placeholder="Optional access code" />
+            </details>
+
+            <p id="form-error" class="form-error" role="alert"></p>
+            <button id="organize-button" class="primary-button" type="submit">
+              <span>Organize my day</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg>
+            </button>
+            <p class="composer-foot">Structured by Orbio · Review before acting</p>
+          </form>
+
+          <section class="plan-panel" aria-live="polite">
+            <div class="plan-topbar">
+              <div class="panel-label"><span>02</span> YOUR PLAN</div>
+              <div id="plan-actions" class="plan-actions hidden">
+                <button id="copy-plan" type="button">Copy</button>
+                <button id="calendar-plan" type="button">Calendar</button>
+                <button id="download-plan" type="button">JSON</button>
+              </div>
+            </div>
+
+            <div id="empty-state" class="empty-state">
+              <div class="empty-orbit" aria-hidden="true">
+                <span></span><span></span>
+                <svg viewBox="0 0 48 48"><path d="M15 12h18M15 24h12M15 36h18"/><circle cx="34" cy="24" r="4"/></svg>
+              </div>
+              <p class="section-kicker">READY WHEN YOU ARE</p>
+              <h3>One input. A calmer day.</h3>
+              <p>DayFlow finds commitments, deadlines and next actions without inventing missing details.</p>
+              <div class="empty-capabilities">
+                <span>Tasks</span><span>Events</span><span>Reminders</span><span>Replies</span>
+              </div>
+            </div>
+
+            <div id="loading-state" class="loading-state hidden">
+              <div class="loader"><span></span><span></span><span></span></div>
+              <p class="section-kicker">DAYFLOW IS WORKING</p>
+              <h3 id="loading-title">Reading the details...</h3>
+              <p id="loading-copy">Finding dates, commitments and the clearest next steps.</p>
+              <div class="loading-bar"><span></span></div>
+            </div>
+
+            <div id="result-state" class="result-state hidden">
+              <header class="result-header">
+                <div>
+                  <p class="section-kicker">PLAN CREATED</p>
+                  <h3 id="plan-title"></h3>
+                  <p id="plan-summary"></p>
+                </div>
+                <span id="grounding-badge" class="grounding-badge"></span>
+              </header>
+
+              <div class="priority-card">
+                <span>DO THIS FIRST</span>
+                <strong id="top-priority"></strong>
+              </div>
+
+              <div id="stats-row" class="stats-row"></div>
+              <div id="plan-sections" class="plan-sections"></div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="how-it-works" class="how-section">
+        <div>
+          <p class="section-kicker">BUILT FOR REAL LIFE</p>
+          <h2>From unstructured input to useful action.</h2>
+        </div>
+        <div class="how-grid">
+          <article><span>01</span><h3>Capture anything</h3><p>Paste text, dictate a note, upload a screenshot or share a PDF.</p></article>
+          <article><span>02</span><h3>Agentic understanding</h3><p>Orbio-powered models identify dates, commitments, replies and missing details.</p></article>
+          <article><span>03</span><h3>Structured output</h3><p>Receive a predictable plan that can be copied, exported or added to a calendar.</p></article>
+        </div>
+      </section>
+
+      <section class="orbio-section">
+        <div>
+          <p class="section-kicker">ONE KEY · MULTIPLE CAPABILITIES</p>
+          <h2>Built on Orbio.</h2>
+          <p>DayFlow turns Orbio inference into a consumer utility people can use every day.</p>
+        </div>
+        <div class="capability-grid">
+          <span>Structured output</span>
+          <span>Image understanding</span>
+          <span>PDF reading</span>
+          <span>Live web grounding</span>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand footer-brand" href="/"><span class="brand-mark"></span><span>DayFlow</span></a>
+      <p>Personal operations, without the busywork.</p>
+      <p>Built for Orbio Build Week · 2026</p>
+    </footer>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

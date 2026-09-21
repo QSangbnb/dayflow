@@ -1,0 +1,37 @@
+{
+  "name": "dayflow-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A multimodal personal operations agent powered by the Orbio API.",
+  "type": "module",
+  "packageManager": "pnpm@10.4.1",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "pnpm run build && node dist/server.js",
+    "start": "node dist/server.js",
+    "test": "pnpm run build && node --test tests/*.test.mjs",
+    "chat": "tsx src/examples/01-chat.ts",
+    "tools": "tsx src/examples/02-tools.ts",
+    "structured": "tsx src/examples/03-structured.ts",
+    "search": "tsx src/examples/04-web-search.ts",
+    "image": "tsx src/examples/05-image.ts",
+    "pdf": "tsx src/examples/06-pdf.ts",
+    "agent": "tsx src/examples/07-agent.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "openai": "^5.20.0",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.35.0",
+    "@types/node": "^24.3.1",
+    "eslint": "^9.35.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.43.0"
+  }
+}
